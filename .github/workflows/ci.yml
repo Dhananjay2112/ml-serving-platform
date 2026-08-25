@@ -29,7 +29,7 @@ jobs:
         run: flake8 app --max-line-length=100
 
       - name: Run tests
-        run: pytest app/tests -v
+        run: PYTHONPATH=. pytest app/tests -v
 
   build-and-push:
     needs: lint-and-test
