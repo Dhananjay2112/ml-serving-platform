@@ -1,0 +1,27 @@
+# Apply this once with: kubectl apply -f argocd/application.yaml
+# ArgoCD will then watch helm/model-serving/ in this repo and auto-sync
+# any change (e.g. an updated image tag) to the cluster - no manual
+# `kubectl apply` or `helm upgrade` needed after this.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: model-serving
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/YOUR_USERNAME/ml-serving-platform.git
+    targetRevision: main
+    path: helm/model-serving
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: model-serving
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

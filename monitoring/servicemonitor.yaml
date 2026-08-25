@@ -1,0 +1,24 @@
+# Requires the kube-prometheus-stack Helm chart installed on the cluster
+# (installs Prometheus Operator, Grafana, and the CRDs this file needs).
+#
+#   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+#   helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+#
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: model-serving
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - model-serving
+  selector:
+    matchLabels:
+      app: model-serving-model-serving
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
